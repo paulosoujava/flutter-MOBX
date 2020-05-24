@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
+import 'package:mobx/mobx.dart';
 import 'package:mobxapp/store/login_store.dart';
 import 'package:mobxapp/widgets/custom_icon_button.dart';
 import 'package:mobxapp/widgets/custom_text_field.dart';
@@ -13,6 +14,32 @@ class LoginScreen extends StatefulWidget {
 
 class _LoginScreenState extends State<LoginScreen> {
   LoginStore loginStore = LoginStore();
+  ReactionDisposer disposer;
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    //ASSIM:
+//   disposer = autorun((_) {
+//      if (loginStore.loggedIn) {
+//        Navigator.of(context).pushReplacement(
+//          MaterialPageRoute(
+//            builder: (context) => ListScreen(),
+//          ),
+//        );
+//      }
+//    });
+    //OU
+    disposer = reaction((_) => loginStore.loggedIn, (loggedIn) {
+      if (loggedIn) {
+        Navigator.of(context).pushReplacement(
+          MaterialPageRoute(
+            builder: (context) => ListScreen(),
+          ),
+        );
+      }
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -32,7 +59,7 @@ class _LoginScreenState extends State<LoginScreen> {
                   mainAxisSize: MainAxisSize.min,
                   children: <Widget>[
                     Observer(
-                      builder: (_){
+                      builder: (_) {
                         return CustomTextField(
                           hint: 'E-mail',
                           prefix: Icon(Icons.account_circle),
@@ -96,16 +123,11 @@ class _LoginScreenState extends State<LoginScreen> {
       ),
     );
   }
+
+  @override
+  void dispose() {
+    disposer();
+    super.dispose();
+  }
+
 }
-/*
- loginStore.isFormValid
-                                ? () {
-                                    loginStore.login();
-                                    Navigator.of(context).pushReplacement(
-                                      MaterialPageRoute(
-                                        builder: (context) => ListScreen(),
-                                      ),
-                                    );
-                                  }
-                                : null
- */

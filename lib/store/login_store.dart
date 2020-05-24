@@ -38,8 +38,11 @@ abstract class _LoginStore with Store {
     loading = true;
     await Future.delayed(Duration(seconds: 2));
     loading = false;
+    loggedIn = true;
   }
 
+  @observable
+  bool loggedIn = false;
 
   //operacoes com observable geralmente sao feitas com computed
   /*

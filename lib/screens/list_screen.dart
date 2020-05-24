@@ -1,17 +1,18 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_mobx/flutter_mobx.dart';
+import 'package:mobxapp/store/list_store.dart';
 import 'package:mobxapp/widgets/custom_icon_button.dart';
 import 'package:mobxapp/widgets/custom_text_field.dart';
-
 
 import 'login_screen.dart';
 
 class ListScreen extends StatefulWidget {
-
   @override
   _ListScreenState createState() => _ListScreenState();
 }
 
 class _ListScreenState extends State<ListScreen> {
+  ListStore listStore = ListStore();
 
   @override
   Widget build(BuildContext context) {
@@ -23,7 +24,8 @@ class _ListScreenState extends State<ListScreen> {
           child: Column(
             children: <Widget>[
               Padding(
-                padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 2),
+                padding:
+                    const EdgeInsets.symmetric(vertical: 16, horizontal: 2),
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: <Widget>[
@@ -32,16 +34,14 @@ class _ListScreenState extends State<ListScreen> {
                       style: TextStyle(
                           color: Colors.white,
                           fontWeight: FontWeight.w900,
-                          fontSize: 32
-                      ),
+                          fontSize: 32),
                     ),
                     IconButton(
                       icon: Icon(Icons.exit_to_app),
                       color: Colors.white,
-                      onPressed: (){
-                        Navigator.of(context).pushReplacement(
-                          MaterialPageRoute(builder: (context)=>LoginScreen())
-                        );
+                      onPressed: () {
+                        Navigator.of(context).pushReplacement(MaterialPageRoute(
+                            builder: (context) => LoginScreen()));
                       },
                     ),
                   ],
@@ -57,35 +57,42 @@ class _ListScreenState extends State<ListScreen> {
                     padding: const EdgeInsets.all(16),
                     child: Column(
                       children: <Widget>[
-                        CustomTextField(
-                          hint: 'Tarefa',
-                          onChanged: (todo){
-
+                        Observer(
+                          builder: (_) {
+                            return CustomTextField(
+                              hint: 'Tarefa',
+                              onChanged: listStore.setNewTodoTitle,
+                              suffix: listStore.isFormValid
+                                  ? CustomIconButton(
+                                      radius: 32,
+                                      iconData: Icons.add,
+                                      onTap: listStore.addTodo,
+                                    )
+                                  : null,
+                            );
                           },
-                          suffix: CustomIconButton(
-                            radius: 32,
-                            iconData: Icons.add,
-                            onTap: (){
-
-                            },
-                          ),
                         ),
-                        const SizedBox(height: 8,),
+                        const SizedBox(
+                          height: 8,
+                        ),
                         Expanded(
-                          child: ListView.separated(
-                            itemCount: 10,
-                            itemBuilder: (_, index){
-                              return ListTile(
-                                title: Text(
-                                  'Item $index',
-                                ),
-                                onTap: (){
-
+                          child:
+                          Observer(
+                            builder: (_){
+                              return  ListView.separated(
+                                itemCount: listStore.todoList.length,
+                                itemBuilder: (_, index) {
+                                  return ListTile(
+                                    title: Text(
+                                      listStore.todoList[index],
+                                    ),
+                                    onTap: () {},
+                                  );
+                                },
+                                separatorBuilder: (_, __) {
+                                  return Divider();
                                 },
                               );
-                            },
-                            separatorBuilder: (_, __){
-                              return Divider();
                             },
                           ),
                         ),
