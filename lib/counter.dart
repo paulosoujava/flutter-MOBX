@@ -1,18 +1,24 @@
 import 'package:mobx/mobx.dart';
+/*
+se utilizar a opção:
+flutter packages pub run build_runner build
+toda vez que mudar algo nesta classe vai ter que rodar o comando acima
+mas se usar o
+flutter packages pub run build_runner watch
+ele fica observando e nao precisa rodar o cmando com build
+ */
+part 'counter.g.dart';
 
-class Counter{
+class Counter = _Counter with _$Counter;
 
-  Observable _count = Observable(0);
-  Action increment;
+abstract class _Counter with Store{
 
-  Counter(){
-    increment = Action(_increment);
-  }
+  @observable
+  int count;
 
-  int get count => _count.value;
-
-  void _increment(){
-    _count.value++;
+  @action
+  void increment(){
+    count++;
   }
 
 
