@@ -39,6 +39,9 @@ abstract class _LoginStore with Store {
     await Future.delayed(Duration(seconds: 2));
     loading = false;
     loggedIn = true;
+
+    email = "";
+    password = "";
   }
 
   @observable
@@ -65,4 +68,8 @@ abstract class _LoginStore with Store {
   Function get loginPressed =>
       (isEmaildValid && isPasswordValid && !loading) ? login : null;
 
+  @action
+  void logout(){
+    loggedIn = false;
+  }
 }

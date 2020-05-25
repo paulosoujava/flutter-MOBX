@@ -4,6 +4,7 @@ import 'package:mobx/mobx.dart';
 import 'package:mobxapp/store/login_store.dart';
 import 'package:mobxapp/widgets/custom_icon_button.dart';
 import 'package:mobxapp/widgets/custom_text_field.dart';
+import 'package:provider/provider.dart';
 
 import 'list_screen.dart';
 
@@ -13,23 +14,13 @@ class LoginScreen extends StatefulWidget {
 }
 
 class _LoginScreenState extends State<LoginScreen> {
-  LoginStore loginStore = LoginStore();
+  LoginStore loginStore;
   ReactionDisposer disposer;
 
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
-    //ASSIM:
-//   disposer = autorun((_) {
-//      if (loginStore.loggedIn) {
-//        Navigator.of(context).pushReplacement(
-//          MaterialPageRoute(
-//            builder: (context) => ListScreen(),
-//          ),
-//        );
-//      }
-//    });
-    //OU
+    loginStore = Provider.of<LoginStore>(context);
     disposer = reaction((_) => loginStore.loggedIn, (loggedIn) {
       if (loggedIn) {
         Navigator.of(context).pushReplacement(

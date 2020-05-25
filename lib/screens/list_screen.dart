@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:mobxapp/store/list_store.dart';
+import 'package:mobxapp/store/login_store.dart';
 import 'package:mobxapp/widgets/custom_icon_button.dart';
 import 'package:mobxapp/widgets/custom_text_field.dart';
+import 'package:provider/provider.dart';
 
 import 'login_screen.dart';
 
@@ -40,6 +42,8 @@ class _ListScreenState extends State<ListScreen> {
                       icon: Icon(Icons.exit_to_app),
                       color: Colors.white,
                       onPressed: () {
+                        //qndo a funcao é chamada somente uma vez precisamos colocar o listen false
+                        Provider.of<LoginStore>(context, listen: false).logout();
                         Navigator.of(context).pushReplacement(MaterialPageRoute(
                             builder: (context) => LoginScreen()));
                       },
